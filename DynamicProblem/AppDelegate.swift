@@ -21,7 +21,8 @@ public func asString(_ value: Any?) -> String? {
 
 extension Reactive where Base: Config {
     var mood: SignalProducer<String?, NoError> {
-        return self.producer(forKeyPath: #keyPath(Config.mood))
+        return self.values(forKeyPath: #keyPath(Config.mood))
+            .take(during: lifetime)
             .map(asString)
     }
 }
@@ -34,12 +35,34 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let config = Config()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        
+//        withUnsafePointer(to: config.reactive.lifetime) {
+            Swift.print("Config's lifetime: \(Unmanaged.passUnretained(config.reactive.lifetime).toOpaque())")
+//        }
+        
+        
+        
     
         config.reactive.mood.startWithValues { mood in
             Swift.print("Mood changed to \(mood)!")
+            
+            if mood == nil {
+                Swift.print("well bummer")
+            }
         }
         
+        config.reactive.lifetime.ended.observeCompleted {
+            Swift.print("CONFIG ZDOCHOL!!")
+        }
+        
+//        config.reactive.mood.logEvents().startWithValues { _ in
+//            
+//        }
+
+        
+        config.mood = "poor"
     }
+
 
     func applicationWillTerminate(_ aNotification: Notification) {
         
