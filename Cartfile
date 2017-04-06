@@ -1,2 +1,2 @@
-github "ReactiveCocoa/ReactiveCocoa" "5.0.2"
+github "ReactiveCocoa/ReactiveCocoa" "ae6ebb7"
 github "ReactiveCocoa/ReactiveSwift" "1.1.1"

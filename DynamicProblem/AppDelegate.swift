@@ -21,7 +21,7 @@ public func asString(_ value: Any?) -> String? {
 
 extension Reactive where Base: Config {
     var mood: SignalProducer<String?, NoError> {
-        return self.values(forKeyPath: #keyPath(Config.mood))
+        return self.producer(forKeyPath: #keyPath(Config.mood))
             .map(asString)
     }
 }
