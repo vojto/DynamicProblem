@@ -7,19 +7,42 @@
 //
 
 import Cocoa
+import ReactiveSwift
+import ReactiveCocoa
+import enum Result.NoError
+
+class Config: NSObject {
+    dynamic var mood: String = "great"
+}
+
+public func asString(_ value: Any?) -> String? {
+    return value as? String
+}
+
+extension Reactive where Base: Config {
+    var mood: SignalProducer<String?, NoError> {
+        return self.values(forKeyPath: #keyPath(Config.mood))
+            .map(asString)
+    }
+}
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var window: NSWindow!
 
+    let config = Config()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        // Insert code here to initialize your application
+    
+        config.reactive.mood.startWithValues { mood in
+            Swift.print("Mood changed to \(mood)!")
+        }
+        
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {
-        // Insert code here to tear down your application
+        
     }
 
 
